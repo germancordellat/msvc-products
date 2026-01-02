@@ -6,6 +6,7 @@ import com.prueba.msvc.products.entities.Product;
 import com.prueba.msvc.products.services.ProductService;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,13 @@ public class ProductController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Product> details(@PathVariable Long id){
+    public ResponseEntity<Product> details(@PathVariable Long id) throws InterruptedException{
+        if (id.equals(10L)) {
+            throw new IllegalStateException("Product not found");
+        }
+        if (id.equals(7L)) {
+            TimeUnit.SECONDS.sleep(3L);
+        }
         return this.service.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }
